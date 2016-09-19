@@ -39,16 +39,30 @@ mkdir $GATHER_REPORTS_DIR
 mkdir $GATLING_REPORT_DIR
 mkdir $GATLING_AGGREGATION_DIR
 
-for HOST in "${HOSTS[@]}"
-do
-	echo "Checking process execuiton in: $HOST"
-	RESPONSE=$(ssh $USER_NAME@$HOST "pgrep gatling")
-	echo "[$RESPONSE]"
-	if [ $? != "" ]; then
-	    echo "Process is running on $HOST, stoping script"
-	    exit 1
+REMOTE_GATTLING_RUNNING="y"
+
+while [ "$REMOTE_GATTLING_RUNNING" != "n" ] ; do
+	#Starts of thinking that all process are finished
+	REMOTE_GATTLING_RUNNING="n"
+
+	for HOST in "${HOSTS[@]}" ; do
+		echo "Checking process execuiton in: $HOST"
+		RESPONSE=$(ssh $USER_NAME@$HOST "pgrep gatling")
+		echo "[$RESPONSE]"
+		if [ ! -z "$RESPONSE" ]; then
+			#if one instance is not finished, the process must wait
+		    echo "Process is running on $HOST"
+		    REMOTE_GATTLING_RUNNING="y"
+		else
+		    echo "Process is not running on $HOST"
+		fi
+	done
+
+	if [ "$REMOTE_GATTLING_RUNNING" != "n" ]; then
+		echo "There are still gatling clients running, waint 30s and trying again"
+		sleep 30s
 	else
-	    echo "Process is not running on $HOST, coping previous execution files"
+		echo "All executors appear to be done, continuing process"
 	fi
 done
 
