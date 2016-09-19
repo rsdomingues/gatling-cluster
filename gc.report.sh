@@ -8,11 +8,18 @@
 #4) Assuming all hosts has the same user name (if not change in script)
 ##################################################################################################################
 
+usage="usage: $(basename "$0") username hostlist"
+
+if [ "$#" -lt 2 ] ; then
+    echo $usage
+    exit 0
+fi
+
 #Assuming same user name for all hosts
-USER_NAME='toor'
+USER_NAME=$1
 
 #Remote hosts list
-HOSTS=(10.211.55.7)
+HOSTS=($2) #10.211.55.7
 
 #Assuming all Gatling installation in same path (with write permissions)
 GATLING_HOME=/gatling
@@ -34,8 +41,21 @@ mkdir $GATLING_AGGREGATION_DIR
 
 for HOST in "${HOSTS[@]}"
 do
+	echo "Checking process execuiton in: $HOST"
+	RESPONSE=$(ssh $USER_NAME@$HOST "pgrep gatling")
+	echo "[$RESPONSE]"
+	if [ $? != "" ]; then
+	    echo "Process is running on $HOST, stoping script"
+	    exit 1
+	else
+	    echo "Process is not running on $HOST, coping previous execution files"
+	fi
+done
+
+for HOST in "${HOSTS[@]}"
+do
   echo "Gathering result file from host: $HOST"
-  #ssh -n -f $USER_NAME@$HOST "sh -c 'ls -t $GATLING_REPORT_DIR | head -n 1 | xargs -I {} mv ${GATLING_REPORT_DIR}{} ${GATLING_REPORT_DIR}report'"
+  ssh -n -f $USER_NAME@$HOST "sh -c 'ls -t $GATLING_REPORT_DIR | head -n 1 | xargs -I {} mv ${GATLING_REPORT_DIR}{} ${GATLING_REPORT_DIR}report'"
   scp $USER_NAME@$HOST:${GATLING_REPORT_DIR}report/simulation.log ${GATHER_REPORTS_DIR}simulation-$HOST.log
 done
 

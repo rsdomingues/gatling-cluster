@@ -8,11 +8,18 @@
 #4) Assuming all hosts has the same user name (if not change in script)
 ##################################################################################################################
 
+usage="usage: $(basename "$0") username hostlist"
+
+if [ "$#" -lt 2 ] ; then
+    echo $usage
+    exit 0
+fi
+
 #Assuming same user name for all hosts
-USER_NAME='toor'
+USER_NAME=$1
 
 #Remote hosts list
-HOSTS=(10.211.55.7)
+HOSTS=($2) #10.211.55.7
 
 #Assuming all Gatling installation in same path (with write permissions)
 GATLING_HOME=/gatling
