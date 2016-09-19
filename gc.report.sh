@@ -18,8 +18,11 @@ fi
 #Assuming same user name for all hosts
 USER_NAME=$1
 
+#ignores the firts parameter
+shift 1
+
 #Remote hosts list
-HOSTS=($2) #10.211.55.7
+HOSTS=($*) #ip list
 
 #Assuming all Gatling installation in same path (with write permissions)
 GATLING_HOME=/gatling
