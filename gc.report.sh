@@ -25,7 +25,7 @@ shift 1
 HOSTS=($*) #ip list
 
 #Assuming all Gatling installation in same path (with write permissions)
-GATLING_HOME=/gatling
+GATLING_HOME=/Users/rodrigostefanidomingues/dev/gatling
 GATLING_RUNNER=$GATLING_HOME/bin/gatling.sh
 
 #No need to change this
@@ -56,13 +56,14 @@ while [ "$REMOTE_GATTLING_RUNNING" != "n" ] ; do
 			#if one instance is not finished, the process must wait
 		    echo "Process is running on $HOST"
 		    REMOTE_GATTLING_RUNNING="y"
+			break
 		else
 		    echo "Process is not running on $HOST"
 		fi
 	done
 
 	if [ "$REMOTE_GATTLING_RUNNING" != "n" ]; then
-		echo "There are still gatling clients running, waint 30s and trying again"
+		echo "There are still gatling clients running, waiting 30s and trying again"
 		sleep 30s
 	else
 		echo "All executors appear to be done, continuing process"

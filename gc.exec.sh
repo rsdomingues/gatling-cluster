@@ -5,7 +5,7 @@
 #1) Public keys were exchange inorder to ssh with no password promot (ssh-copy-id on all remotes)
 #2) Check  read/write permissions on all folders declared in this script.
 #3) Gatling installation (GATLING_HOME variable) is the same on all hosts
-#4) Assuming all hosts has the same user name (if not change in script)
+#4) Assuming all hosts have the same user name (if not change in script)
 ##################################################################################################################
 
 usage="usage: $(basename "$0") username hostlist"
@@ -30,11 +30,11 @@ GATLING_SIMULATIONS_DIR=$GATLING_HOME/user-files/simulations
 GATLING_RUNNER=$GATLING_HOME/bin/gatling.sh
 
 #Change to your simulation class name
-SIMULATION_NAME='computerdatabase.BasicSimulation'
+SIMULATION_NAME='gale.UsageSimulation'
 
 #No need to change this
 GATLING_REPORT_DIR=$GATLING_HOME/results/
-GATHER_REPORTS_DIR=/gatling/reports/
+GATHER_REPORTS_DIR=$GATLING_HOME/reports/
 
 echo "Starting Gatling cluster run for simulation: $SIMULATION_NAME"
 
@@ -58,5 +58,5 @@ done
 for HOST in "${HOSTS[@]}"
 do
   echo "Running simulation on host: $HOST"
-  ssh -n -f $USER_NAME@$HOST "sh -c 'nohup $GATLING_RUNNER -nr -s $SIMULATION_NAME > /gatling/run.log 2>&1 &'"
+  ssh -n -f $USER_NAME@$HOST "sh -c 'nohup $GATLING_RUNNER -nr -s $SIMULATION_NAME > $GATLING_HOME/run.log 2>&1 &'"
 done
