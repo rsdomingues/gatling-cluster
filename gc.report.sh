@@ -25,7 +25,7 @@ shift 1
 HOSTS=($*) #ip list
 
 #Assuming all Gatling installation in same path (with write permissions)
-GATLING_HOME=/Users/rodrigostefanidomingues/dev/gatling
+GATLING_HOME=/gatling
 GATLING_RUNNER=$GATLING_HOME/bin/gatling.sh
 
 #No need to change this
